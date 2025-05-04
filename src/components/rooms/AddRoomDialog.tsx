@@ -30,7 +30,7 @@ const roomFormSchema = z.object({
   price: z.coerce.number().min(1, "Price must be at least $1"),
   status: z.enum(["available", "occupied", "maintenance", "reserved"]),
   image: z.string().optional(),
-  features: z.array(z.string()).optional(),
+  features: z.array(z.string()),
 });
 
 type RoomFormValues = z.infer<typeof roomFormSchema>;
@@ -81,15 +81,18 @@ export function AddRoomDialog({ room, setOpen }: RoomCardProps) {
     }
   }, [room, form]);
 
-  const onSubmit = async (data: RoomCreate) => {
+  const onSubmit: SubmitHandler<RoomCreate> = async (data) => {
     setIsSubmitting(true);
 
     try {
-      // Add new room
-      dispatch(createRoom(data));
-      toast.success("Room added successfully");
+      // Ensure features is always an array
+      const roomData = { ...data, features: data.features || [] };
 
-      form.reset();
+      const result = await dispatch(createRoom(roomData));
+      if (result.type.includes("fulfilled")) {
+        toast.success("Room created successfully!");
+      }
+
       setOpen(false);
     } catch (error) {
       toast.error("Failed to save room");

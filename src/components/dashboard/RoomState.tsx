@@ -30,33 +30,24 @@ export function RoomState({ className }: RoomStateProps) {
   // Calculate room states based on the selected time range
   const roomStateData = useMemo(() => {
     const today = new Date();
-    let startDate;
-    let endDate;
-
     switch (timeRange) {
       case "week":
-        startDate = startOfWeek(today);
-        endDate = endOfWeek(today);
-        break;
+        return { startDate: startOfWeek(today), endDate: endOfWeek(today) };
+
       case "month":
-        startDate = startOfMonth(today);
-        endDate = endOfMonth(today);
-        break;
+        return { startDate: startOfMonth(today), endDate: endOfMonth(today) };
+
       case "today":
       default:
-        startDate = startOfDay(today);
-        endDate = endOfDay(today);
-        break;
+        return { startDate: startOfDay(today), endDate: endOfDay(today) };
     }
-
-    const totalRooms = rooms.length;
-    const occupiedRooms = rooms.filter((room) => room.status === "occupied").length;
-    const reservedRooms = rooms.filter((room) => room.status === "reserved").length;
-    const maintenanceRooms = rooms.filter((room) => room.status === "maintenance").length;
-    const availableRooms = rooms.filter((room) => room.status === "available").length;
-
-    return { totalRooms, occupiedRooms, reservedRooms, maintenanceRooms, availableRooms };
   }, [rooms, bookings, timeRange]);
+
+  const totalRooms = rooms.length;
+  const occupiedRooms = rooms.filter((room) => room.status === "occupied").length;
+  const reservedRooms = rooms.filter((room) => room.status === "reserved").length;
+  const maintenanceRooms = rooms.filter((room) => room.status === "maintenance").length;
+  const availableRooms = rooms.filter((room) => room.status === "available").length;
 
   // Chart data
   const chartData = useMemo(() => {
@@ -65,12 +56,7 @@ export function RoomState({ className }: RoomStateProps) {
       datasets: [
         {
           label: "Rooms",
-          data: [
-            roomStateData.availableRooms,
-            roomStateData.reservedRooms,
-            roomStateData.occupiedRooms,
-            roomStateData.maintenanceRooms,
-          ],
+          data: [availableRooms, reservedRooms, occupiedRooms, maintenanceRooms],
           backgroundColor: ["#D1FAE5", "#FEF3C7", "#DBEAFE", "#FEE2E2"], // Green, Amber, Blue, Red
           borderColor: ["#10B981", "#F59E0B", "#3B82F6", "#EF4444"], // Darker shades for borders
           borderWidth: 1,
@@ -129,7 +115,7 @@ export function RoomState({ className }: RoomStateProps) {
       </CardHeader>
       <CardContent className="flex justify-center items-center">
         <div className="h-[275px] w-[275px]">
-          {roomStateData.totalRooms > 0 ? (
+          {totalRooms > 0 ? (
             <Pie data={chartData} options={chartOptions} />
           ) : (
             <p className="text-muted-foreground italic text-center">No room data available.</p>
