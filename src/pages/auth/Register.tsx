@@ -53,7 +53,10 @@ export default function Register() {
   const handleRegister = async (formData: registerData) => {
     console.log("Registering user:", formData);
     try {
-      const { data } = await axios.post("http://localhost:24/api/auth/register", formData);
+      const { data } = await axios.post(
+        "https://hotel-management-server-delta.vercel.app/api/auth/register",
+        formData
+      );
 
       console.log(data);
 

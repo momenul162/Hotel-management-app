@@ -47,7 +47,10 @@ export default function Login() {
     setLoading(true);
     console.log(formData);
     try {
-      const { data } = await axios.post("http://localhost:24/api/auth/login", formData);
+      const { data } = await axios.post(
+        "https://hotel-management-server-delta.vercel.app/api/auth/login",
+        formData
+      );
 
       console.log(data);
 

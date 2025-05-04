@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Define the API URL (it can be dynamic or static based on environment)
-const API_URL = "http://localhost:24/api";
+const API_URL = "https://hotel-management-server-delta.vercel.app/api";
 
 // Create an axios instance
 const baseURL = axios.create({
