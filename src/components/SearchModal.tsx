@@ -5,10 +5,12 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { BedDouble, Calendar, Search, User, Users } from "lucide-react";
-import { guests } from "../utils/dummyData";
-import { rooms } from "../utils/dummyData";
-import { bookings } from "../utils/dummyData";
 import { Guest, Room, Booking } from "../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+// import { fetchAllBookings } from "../redux/service/bookingService";
+// import { fetchAllRooms } from "../redux/service/roomService";
+// import { fetchAllGuests } from "../redux/service/guestService";
 
 type SearchResult = {
   type: "guest" | "room" | "booking";
@@ -29,6 +31,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const navigate = useNavigate();
+  // const dispatch = useDispatch<AppDispatch>();
+  const { rooms } = useSelector((state: RootState) => state.rooms);
+  const { guests } = useSelector((state: RootState) => state.guests);
+  const { bookings } = useSelector((state: RootState) => state.booking);
+
+  // useEffect(() => {
+  //   dispatch(fetchAllBookings());
+  //   dispatch(fetchAllRooms());
+  //   dispatch(fetchAllGuests());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -49,12 +61,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     filteredGuests.forEach((guest: Guest) => {
       searchResults.push({
         type: "guest",
-        id: guest.id,
+        id: guest._id,
         title: guest.name,
         subtitle: guest.email,
         icon: <User className="h-4 w-4 text-primary" />,
         avatarUrl: guest.avatar,
-        route: `/guests/edit/${guest.id}`,
+        route: `/guests/edit/${guest._id}`,
       });
     });
 
@@ -68,7 +80,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     filteredRooms.forEach((room: Room) => {
       searchResults.push({
         type: "room",
-        id: room.id,
+        id: room._id,
         title: `Room ${room.number}`,
         subtitle: `${room.type} - ${room.status}`,
         icon: <BedDouble className="h-4 w-4 text-primary" />,
@@ -79,16 +91,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     // Search bookings
     const filteredBookings = bookings.filter(
       (booking) =>
-        booking.id.includes(lowerSearchTerm) ||
-        booking.guestName.toLowerCase().includes(lowerSearchTerm)
+        booking._id.includes(lowerSearchTerm) ||
+        booking.guestId.name.toLowerCase().includes(lowerSearchTerm)
     );
 
     filteredBookings.forEach((booking: Booking) => {
       searchResults.push({
         type: "booking",
-        id: booking.id,
-        title: `Booking #${booking.id}`,
-        subtitle: `${booking.guestName} - ${booking.roomNumber}`,
+        id: booking._id,
+        title: `Booking #${booking._id}`,
+        subtitle: `${booking.guestId.name} - ${booking.roomId.number}`,
         icon: <Calendar className="h-4 w-4 text-primary" />,
         route: `/reservations`,
       });
