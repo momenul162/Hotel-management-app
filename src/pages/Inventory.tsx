@@ -33,7 +33,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { fetchAllInventoryItems } from "../redux/service/inventoryService";
 import { Inventory } from "../types";
-import { GuestCartSkeleton } from "../components/ui/skeleton/guest-card-skeleton";
 import { InventoryRowSkeleton } from "../components/ui/skeleton/inventory-row-skeleton";
 
 export default function InventoryPage() {
