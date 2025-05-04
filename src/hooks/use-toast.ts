@@ -3,11 +3,15 @@ import * as React from "react";
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
 
-type ToasterToast = ToastProps & {
+type ToastActionElement = React.ReactElement | null;
+
+type ToasterToast = {
   id: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: ToastActionElement;
+  open?: boolean; // Add this
+  onOpenChange?: (open: boolean) => void; // Add this
 };
 
 const actionTypes = {

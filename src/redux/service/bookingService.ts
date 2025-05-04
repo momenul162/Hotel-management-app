@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import baseURL from "../../utils/base-url";
-import { BookingCreate, BookingStatus, RoomType } from "../../types";
+import { BookingCreate } from "../../types";
 
 // Fetch all bookings
 export const fetchAllBookings = createAsyncThunk("bookings/fetchAll", async () => {

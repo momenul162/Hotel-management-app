@@ -7,14 +7,11 @@ import Rooms from "./pages/Rooms";
 import Reservations from "./pages/Reservations";
 import NewReservation from "./pages/reservations/NewReservation";
 import Guests from "./pages/Guests";
-import AddInventoryItem from "./pages/inventory/AddItem";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import EditGuest from "./pages/guests/EditGuest";
-import BookStay from "./pages/guests/BookStay";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
 import store from "./redux/store";
@@ -40,11 +37,8 @@ const App = () => (
               <Route path="/reservations/new" element={<NewReservation />} />
               <Route path="/reservations/status-change" element={<ChangeStatus />} />
               <Route path="/guests" element={<Guests />} />
-              <Route path="/guests/edit/:id" element={<EditGuest />} />
-              <Route path="/guests/book/:id" element={<BookStay />} />
               <Route path="/staff" element={<StaffPage />} />
               <Route path="/inventory" element={<InventoryPage />} />
-              <Route path="/inventory/add" element={<AddInventoryItem />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
