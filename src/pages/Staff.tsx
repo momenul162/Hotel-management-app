@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -32,92 +32,39 @@ import { AddStaffDialog } from "../components/staff/AddStaffDialog";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
+import { AppDispatch, RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllStaff } from "../redux/service/staffService";
+import { Staff } from "../types";
+import { StaffCardSkeleton } from "../components/ui/skeleton/staff-card-skeleton";
 
-// Sample staff data
-const staffMembers = [
-  {
-    id: 1,
-    name: "Emma Wilson",
-    email: "emma.wilson@luxurysuites.com",
-    phone: "+1 (555) 123-4567",
-    role: "Hotel Manager",
-    department: "Management",
-    avatar: "",
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    email: "michael.chen@luxurysuites.com",
-    phone: "+1 (555) 234-5678",
-    role: "Front Desk Manager",
-    department: "Front Office",
-    avatar: "",
-    status: "active",
-  },
-  {
-    id: 3,
-    name: "Sofia Rodriguez",
-    email: "sofia.rodriguez@luxurysuites.com",
-    phone: "+1 (555) 345-6789",
-    role: "Housekeeping Supervisor",
-    department: "Housekeeping",
-    avatar: "",
-    status: "active",
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    email: "david.kim@luxurysuites.com",
-    phone: "+1 (555) 456-7890",
-    role: "Maintenance Technician",
-    department: "Maintenance",
-    avatar: "",
-    status: "on-leave",
-  },
-  {
-    id: 5,
-    name: "Olivia Davis",
-    email: "olivia.davis@luxurysuites.com",
-    phone: "+1 (555) 567-8901",
-    role: "Chef",
-    department: "Food & Beverage",
-    avatar: "",
-    status: "active",
-  },
-  {
-    id: 6,
-    name: "James Johnson",
-    email: "james.johnson@luxurysuites.com",
-    phone: "+1 (555) 678-9012",
-    role: "Security Officer",
-    department: "Security",
-    avatar: "",
-    status: "inactive",
-  },
-];
-
-export default function Staff() {
+export default function StaffPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStaff, setSelectedStaff] = useState<any>(null);
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [viewDetailsOpen, setViewDetailsOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { staffList, staffLoading } = useSelector((state: RootState) => state.staff);
 
-  const filteredStaff = staffMembers.filter(
-    (staff) =>
+  useEffect(() => {
+    dispatch(fetchAllStaff());
+  }, [dispatch]);
+
+  const filteredStaff = staffList.filter(
+    (staff: Staff) =>
       staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       staff.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
       staff.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEditStaff = (id: number) => {
+  const handleEditStaff = (id: string) => {
     toast.info(`Edit staff member with ID: ${id}`);
   };
 
-  const handleDeleteStaff = (id: number) => {
+  const handleDeleteStaff = (id: string) => {
     toast.success(`Staff member with ID: ${id} removed`);
   };
 
-  const handleViewDetails = (staff: any) => {
+  const handleViewDetails = (staff: Staff) => {
     setSelectedStaff(staff);
     setViewDetailsOpen(true);
   };
@@ -157,91 +104,99 @@ export default function Staff() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredStaff.map((staff) => (
-                  <Card key={staff.id} className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="flex items-start p-4">
-                        <Avatar className="h-12 w-12 mr-4 border">
-                          <AvatarImage src={staff.avatar} alt={staff.name} />
-                          <AvatarFallback>
-                            {staff.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <button
-                                className="font-semibold hover:underline text-left"
-                                onClick={() => handleViewDetails(staff)}
-                              >
-                                {staff.name}
-                              </button>
-                              <p className="text-sm text-muted-foreground">{staff.role}</p>
-                            </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => handleViewDetails(staff)}>
-                                  View details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleEditStaff(staff.id)}>
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  Edit details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  className="text-destructive focus:text-destructive"
-                                  onClick={() => handleDeleteStaff(staff.id)}
+                {staffLoading && (
+                  <>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                      <StaffCardSkeleton key={index} />
+                    ))}
+                  </>
+                )}
+                {!staffLoading &&
+                  filteredStaff.map((staff: Staff) => (
+                    <Card key={staff._id} className="overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="flex items-start p-4">
+                          <Avatar className="h-12 w-12 mr-4 border">
+                            <AvatarImage src={staff.avatar} alt={staff.name} />
+                            <AvatarFallback>
+                              {staff.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <button
+                                  className="font-semibold hover:underline text-left"
+                                  onClick={() => handleViewDetails(staff)}
                                 >
-                                  <Trash className="mr-2 h-4 w-4" />
-                                  Remove staff
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                          <Badge
-                            variant={
-                              staff.status === "active"
-                                ? "default"
-                                : staff.status === "on-leave"
-                                ? "outline"
-                                : "secondary"
-                            }
-                            className="mt-1"
-                          >
-                            {staff.status === "active"
-                              ? "Active"
-                              : staff.status === "on-leave"
-                              ? "On Leave"
-                              : "Inactive"}
-                          </Badge>
-                          <div className="mt-3 space-y-1 text-sm">
-                            <div className="flex items-center text-muted-foreground">
-                              <Mail className="h-3.5 w-3.5 mr-2" />
-                              {staff.email}
+                                  {staff.name}
+                                </button>
+                                <p className="text-sm text-muted-foreground">{staff.role}</p>
+                              </div>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Menu</span>
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem onClick={() => handleViewDetails(staff)}>
+                                    View details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleEditStaff(staff._id)}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit details
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => handleDeleteStaff(staff._id)}
+                                  >
+                                    <Trash className="mr-2 h-4 w-4" />
+                                    Remove staff
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             </div>
-                            <div className="flex items-center text-muted-foreground">
-                              <Phone className="h-3.5 w-3.5 mr-2" />
-                              {staff.phone}
+                            <Badge
+                              variant={
+                                staff.status === "active"
+                                  ? "default"
+                                  : staff.status === "on-leave"
+                                  ? "outline"
+                                  : "secondary"
+                              }
+                              className="mt-1"
+                            >
+                              {staff.status === "active"
+                                ? "Active"
+                                : staff.status === "on-leave"
+                                ? "On Leave"
+                                : "Inactive"}
+                            </Badge>
+                            <div className="mt-3 space-y-1 text-sm">
+                              <div className="flex items-center text-muted-foreground">
+                                <Mail className="h-3.5 w-3.5 mr-2" />
+                                {staff.email}
+                              </div>
+                              <div className="flex items-center text-muted-foreground">
+                                <Phone className="h-3.5 w-3.5 mr-2" />
+                                {staff.phone}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="bg-muted/40 px-4 py-2 text-xs">
-                        <span className="font-medium">Department:</span> {staff.department}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <div className="bg-muted/40 px-4 py-2 text-xs">
+                          <span className="font-medium">Department:</span> {staff.department}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
               </div>
             </CardContent>
           </Card>
@@ -254,24 +209,24 @@ export default function Staff() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-2 text-center">
                 <Card className="p-4">
-                  <p className="text-3xl font-bold">{staffMembers.length}</p>
+                  <p className="text-3xl font-bold">{staffList.length}</p>
                   <p className="text-sm text-muted-foreground">Total Staff</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-3xl font-bold">
-                    {staffMembers.filter((s) => s.status === "active").length}
+                    {staffList.filter((s) => s.status === "active").length}
                   </p>
                   <p className="text-sm text-muted-foreground">Active</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-3xl font-bold">
-                    {staffMembers.filter((s) => s.status === "on-leave").length}
+                    {staffList.filter((s) => s.status === "on-leave").length}
                   </p>
                   <p className="text-sm text-muted-foreground">On Leave</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-3xl font-bold">
-                    {staffMembers.filter((s) => s.status === "inactive").length}
+                    {staffList.filter((s) => s.status === "inactive").length}
                   </p>
                   <p className="text-sm text-muted-foreground">Inactive</p>
                 </Card>
@@ -280,11 +235,11 @@ export default function Staff() {
               <div>
                 <h3 className="font-semibold mb-2">Departments</h3>
                 <div className="space-y-2">
-                  {Array.from(new Set(staffMembers.map((s) => s.department))).map((dept) => (
+                  {Array.from(new Set(staffList.map((s) => s.department))).map((dept) => (
                     <div key={dept} className="flex justify-between items-center text-sm">
                       <span>{dept}</span>
                       <Badge variant="secondary">
-                        {staffMembers.filter((s) => s.department === dept).length}
+                        {staffList.filter((s) => s.department === dept).length}
                       </Badge>
                     </div>
                   ))}
@@ -312,7 +267,7 @@ export default function Staff() {
             <div className="space-y-6 py-4">
               <div className="flex items-start gap-4">
                 <Avatar className="h-20 w-20 border">
-                  <AvatarImage src={selectedStaff.avatar} alt={selectedStaff.name} />
+                  <AvatarImage src={selectedStaff?.avatar} alt={selectedStaff.name} />
                   <AvatarFallback className="text-lg">
                     {selectedStaff.name
                       .split(" ")
@@ -373,26 +328,15 @@ export default function Staff() {
                 </div>
               </div>
 
-              <div className="rounded-md bg-muted p-4">
-                <h3 className="text-sm font-medium mb-2">Recent Activity</h3>
-                <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground">Last login: Today, 9:30 AM</p>
-                  <p className="text-xs text-muted-foreground">Tasks completed this week: 12</p>
-                  <p className="text-xs text-muted-foreground">
-                    Next scheduled shift: Tomorrow, 8:00 AM
-                  </p>
-                </div>
-              </div>
-
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => handleEditStaff(selectedStaff.id)}>
+                <Button variant="outline" onClick={() => handleEditStaff(selectedStaff._id)}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Details
                 </Button>
                 <Button
                   variant="destructive"
                   onClick={() => {
-                    handleDeleteStaff(selectedStaff.id);
+                    handleDeleteStaff(selectedStaff._id);
                     setViewDetailsOpen(false);
                   }}
                 >

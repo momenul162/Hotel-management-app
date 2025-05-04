@@ -4,6 +4,8 @@ import roomReducer from "./slices/roomSlice";
 import guestReducer from "./slices/guestSlice";
 import settingsReducer from "./slices/settingsSlice";
 import bookingReducer from "./slices/bookingSlice";
+import inventoryReducer from "./slices/inventorySlice";
+import staffReducer from "./slices/staffSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     rooms: roomReducer,
     guests: guestReducer,
     booking: bookingReducer,
+    inventory: inventoryReducer,
+    staff: staffReducer,
   },
 });
 

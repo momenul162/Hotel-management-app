@@ -47,6 +47,46 @@ export interface BookingCreate {
   totalAmount: number;
 }
 
+export interface Inventory {
+  _id: string;
+  name: string;
+  category: string;
+  quantity: number;
+  minimumQuantity: number;
+  supplier: string;
+  lastRestocked: Date;
+}
+
+export interface InventoryCreate {
+  name: string;
+  category: string;
+  quantity: number;
+  minimumQuantity: number;
+  supplier: string;
+  lastRestocked: string;
+}
+
+export interface Staff {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  department: string;
+  status: "active" | "on-leave" | "inactive";
+  avatar?: string;
+}
+
+export interface StaffCreate {
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  department: string;
+  status?: "active" | "on-leave" | "inactive";
+  avatar?: string;
+}
+
 export interface DashboardStat {
   title: string;
   value: string | number;

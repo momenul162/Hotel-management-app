@@ -7,8 +7,6 @@ import Rooms from "./pages/Rooms";
 import Reservations from "./pages/Reservations";
 import NewReservation from "./pages/reservations/NewReservation";
 import Guests from "./pages/Guests";
-import Staff from "./pages/Staff";
-import Inventory from "./pages/Inventory";
 import AddInventoryItem from "./pages/inventory/AddItem";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
@@ -21,6 +19,8 @@ import { TooltipProvider } from "./components/ui/tooltip";
 import { Toaster } from "./components/ui/sonner";
 import store from "./redux/store";
 import ChangeStatus from "./components/reservation/change-status";
+import StaffPage from "./pages/Staff";
+import InventoryPage from "./pages/Inventory";
 
 const queryClient = new QueryClient();
 
@@ -42,8 +42,8 @@ const App = () => (
               <Route path="/guests" element={<Guests />} />
               <Route path="/guests/edit/:id" element={<EditGuest />} />
               <Route path="/guests/book/:id" element={<BookStay />} />
-              <Route path="/staff" element={<Staff />} />
-              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/staff" element={<StaffPage />} />
+              <Route path="/inventory" element={<InventoryPage />} />
               <Route path="/inventory/add" element={<AddInventoryItem />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />

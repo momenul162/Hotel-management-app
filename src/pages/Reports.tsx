@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -9,16 +9,7 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import {
-  BarChart3,
-  Calendar,
-  Download,
-  FileDown,
-  FileText,
-  LineChart,
-  PieChart,
-  Share,
-} from "lucide-react";
+import { BarChart3, Calendar, FileDown, FileText, LineChart, PieChart } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -29,12 +20,46 @@ import {
 import { RevenueChart, OccupancyChart } from "../utils/reportService";
 import { toast } from "sonner";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { fetchAllBookings } from "../redux/service/bookingService";
+import { fetchAllRooms } from "../redux/service/roomService";
+import { Room } from "../types";
 
 export default function Reports() {
   const [timeRange, setTimeRange] = useState<"daily" | "weekly" | "monthly" | "yearly">("monthly");
+  const dispatch = useDispatch<AppDispatch>();
+  const { bookings } = useSelector((state: RootState) => state.booking);
+  const { rooms } = useSelector((state: RootState) => state.rooms);
+
+  useEffect(() => {
+    dispatch(fetchAllBookings());
+    dispatch(fetchAllRooms());
+  }, [dispatch]);
+
+  const metrics = useMemo(() => {
+    const totalRooms = rooms.length;
+    const occupiedRooms = rooms.filter((room: Room) => room.status === "reserved").length;
+    const revenue = bookings.reduce((total, booking) => total + booking.totalAmount, 0);
+
+    const roomDistribution = {
+      deluxe: rooms.filter((room: Room) => room.type === "Deluxe").length,
+      standard: rooms.filter((room: Room) => room.type === "Standard").length,
+      suite: rooms.filter((room: Room) => room.type === "Suite").length,
+      executive: rooms.filter((room: Room) => room.type === "Executive").length,
+    };
+    const averageOccupancy = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
+
+    return {
+      totalRooms,
+      occupiedRooms,
+      revenue,
+      roomDistribution,
+      averageOccupancy,
+    };
+  }, [rooms, bookings]);
 
   const handleExport = () => {
-    // const reportUrl = downloadReport("revenue", "pdf");
     toast.success("Report exported successfully!");
   };
 
@@ -58,13 +83,9 @@ export default function Reports() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleExport}>
-              <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button onClick={handleShare}>
-              <Share className="h-4 w-4 mr-2" />
-              Share Reports
-            </Button>
+            <Button onClick={handleShare}>Share Reports</Button>
           </div>
         </div>
 
@@ -103,7 +124,7 @@ export default function Reports() {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold">78%</p>
+                      <p className="text-3xl font-bold">{metrics.averageOccupancy}%</p>
                       <p className="text-xs text-muted-foreground flex items-center">
                         <span className="text-green-500 mr-1">↑ 12%</span> vs last month
                       </p>
@@ -121,7 +142,7 @@ export default function Reports() {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold">$152,385</p>
+                      <p className="text-3xl font-bold">${metrics.revenue.toLocaleString()}</p>
                       <p className="text-xs text-muted-foreground flex items-center">
                         <span className="text-green-500 mr-1">↑ 8%</span> vs last month
                       </p>
@@ -139,9 +160,15 @@ export default function Reports() {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-lg font-semibold">Deluxe: 42%</p>
-                      <p className="text-sm text-muted-foreground">Standard: 35%</p>
-                      <p className="text-sm text-muted-foreground">Suite: 23%</p>
+                      <p className="text-lg font-semibold">
+                        Deluxe: {metrics.roomDistribution.deluxe}%
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Standard: {metrics.roomDistribution.standard}%
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Suite: {metrics.roomDistribution.suite}%
+                      </p>
                     </div>
                     <PieChart className="h-8 w-8 text-muted-foreground/50" />
                   </div>

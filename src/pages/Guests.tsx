@@ -89,7 +89,7 @@ export default function Guests() {
     [guests]
   );
 
-  const handleRemove = useCallback((id: string) => {
+  const handleRemove = useCallback((_id: string) => {
     setConfirmRemoveOpen(true);
   }, []);
 
