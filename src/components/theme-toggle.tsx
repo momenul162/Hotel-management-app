@@ -5,7 +5,7 @@ import { useLocalStorage } from "../hooks/use-local-storage";
 import { cn } from "../lib/utils";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useLocalStorage<"light" | "dark">("theme", "light");
+  const [theme, setTheme] = useLocalStorage<"light" | "dark">("theme", "dark");
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";

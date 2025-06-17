@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const isMobile = useIsMobile();
-  const [theme] = useLocalStorage<"light" | "dark">("theme", "light");
+  const [theme] = useLocalStorage<"light" | "dark">("theme", "dark");
 
   // Apply theme class on component mount and when theme changes
   useEffect(() => {

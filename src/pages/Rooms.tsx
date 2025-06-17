@@ -153,32 +153,32 @@ export default function Rooms() {
                 </StatusButton>
                 <StatusButton
                   active={filter === "available"}
-                  className="bg-green-50 border-green-100"
-                  activeClass="bg-green-100 border-green-200"
+                  className="bg-green-50 border-green-100 dark:bg-green-900 dark:border-green-800"
+                  activeClass="bg-green-100 border-green-200 dark:bg-green-100 dark:text-green-900"
                   onClick={() => handleFilterChange("available")}
                 >
                   Available
                 </StatusButton>
                 <StatusButton
                   active={filter === "occupied"}
-                  className="bg-blue-50 border-blue-100"
-                  activeClass="bg-blue-100 border-blue-200"
+                  className="bg-blue-50 border-blue-100 dark:bg-blue-900 dark:border-blue-800"
+                  activeClass="bg-blue-100 border-blue-200 dark:bg-blue-100 dark:text-blue-900"
                   onClick={() => handleFilterChange("occupied")}
                 >
                   Occupied
                 </StatusButton>
                 <StatusButton
                   active={filter === "reserved"}
-                  className="bg-amber-50 border-amber-100"
-                  activeClass="bg-amber-100 border-amber-200"
+                  className="bg-amber-50 border-amber-100 dark:bg-amber-900 dark:border-amber-800"
+                  activeClass="bg-amber-100 border-amber-200 dark:bg-amber-100 dark:text-amber-900"
                   onClick={() => handleFilterChange("reserved")}
                 >
                   Reserved
                 </StatusButton>
                 <StatusButton
                   active={filter === "maintenance"}
-                  className="bg-red-50 border-red-100"
-                  activeClass="bg-red-100 border-red-200"
+                  className="bg-red-50 border-red-100 dark:bg-red-900 dark:border-red-800"
+                  activeClass="bg-red-100 border-red-200 dark:bg-red-100 dark:text-red-900"
                   onClick={() => handleFilterChange("maintenance")}
                 >
                   Maintenance
