@@ -1,54 +1,73 @@
-# React + TypeScript + Vite
+# Hotel Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, full-featured hotel management system built with React, Redux Toolkit, TypeScript, Vite, and Tailwind CSS. This application streamlines hotel operations, including room management, reservations, guest tracking, staff, inventory, and reporting.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dashboard**: Overview of hotel stats, recent bookings, and available rooms.
+- **Room Management**: Add, edit, filter, and view room details and statuses.
+- **Guest Management**: Track guest information, VIP status, and visit history.
+- **Reservations**: Manage bookings, check-in/out, and booking statuses.
+- **Staff Management**: Add, edit, and monitor staff members and their statuses.
+- **Inventory**: Track inventory items, request restocks, and generate reports.
+- **Reports**: Visualize revenue, occupancy, and other key metrics.
+- **Settings**: Customize app preferences, theme, and more.
+- **Authentication**: Secure login and registration for staff.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS
+- **State Management**: Redux Toolkit
+- **UI Components**: Radix UI, Lucide Icons, Chart.js, React Hook Form
+- **Data Fetching**: Axios, React Query
+- **Utilities**: Lodash, date-fns, xlsx, file-saver
+- **Testing & Linting**: ESLint
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- pnpm (or npm/yarn)
+
+### Installation
+
+```sh
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```sh
+pnpm dev
 ```
+
+### Build
+
+```sh
+pnpm build
+```
+
+### Preview
+
+```sh
+pnpm preview
+```
+
+## Project Structure
+
+- `src/pages/` — Main app pages (Dashboard, Rooms, Guests, Reservations, etc.)
+- `src/components/` — Reusable UI and feature components
+- `src/redux/` — Redux store, slices, and services
+- `src/types/` — TypeScript types and interfaces
+- `src/utils/` — Utility functions and helpers
+- `public/` — Static assets
+
+## Customization
+
+- Update hotel branding, images, and settings in the `public/` and `src/assets/` folders.
+- Modify theme and UI in `src/components/ui/` and `src/App.css`.
+
+## License
+
+This project is for educational and demonstration purposes.
